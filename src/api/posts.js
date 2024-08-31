@@ -13,6 +13,6 @@ export const getPosts = async () => {
 };
 
 export const createNewPost = async (post) => {
-  const { data } = await axios.post(`${API}/posts`, post);
+  const { data } = await axios.post(`${API}/postsx`, post);
   return data;
 };

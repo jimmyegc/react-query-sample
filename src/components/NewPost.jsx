@@ -1,24 +1,34 @@
 import React, { useState } from "react";
 import { useMutatePost } from "../hooks/posts";
 
+const messageSuccess = "¡El post fue agregado con éxito!"
 function NewPost() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const { mutate, mutateAsync, error, isLoading, isSuccess, reset } = useMutatePost()
+  const { mutate, mutateAsync, error, isLoading, isSuccess, reset, status } = useMutatePost()
+
+  const addNewMutation = useMutatePost()
 
   //const [isLoading, setIsLoading] = useState(false);
   //const [error, setError] = useState(null);
 
+  console.log("isloading", addNewMutation.isLoading)
+  console.log("isSuccess", addNewMutation.isSuccess)
+  console.log("isError", addNewMutation.isError)
+  console.log("status", addNewMutation.status)
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    mutate({ title, body }, {
+    addNewMutation.mutate({ title, body })
+
+    /* mutate({ title, body }, {
       onSuccess: () => {
         setTitle("");
         setBody("");
       }
-    })
+    }) */
 
     /* setIsLoading(true);
     try {
@@ -33,7 +43,20 @@ function NewPost() {
     setIsLoading(false); */
   };
 
+  const srcImg = addNewMutation.isError ? "https://img.fortawesome.com/9e86c4d0/alert-warning.svg" : "https://img.fortawesome.com/9e86c4d0/alert-success.svg";
+
   return (
+    <>    
+    {addNewMutation.isLoading && <span>Cargando...</span> }
+      {addNewMutation.isSuccess || addNewMutation.isError && (
+        <>
+        <img src={srcImg} />
+        <strong className="me-auto">
+                {addNewMutation?.error?.message}
+                {addNewMutation?.isSuccess && messageSuccess}
+        </strong>
+        </>
+      )}    
     <section>
       <h2>Create Post:</h2>
       <form onSubmit={handleSubmit} className="">
@@ -82,6 +105,7 @@ function NewPost() {
         </div>}
       </form>
     </section>
+    </>
   );
 }
 
